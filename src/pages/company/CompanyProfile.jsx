@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import CompanyProfileForm from '../../components/forms/CompanyProfileForm';
 import Loader from '../../components/common/Loader';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 import { getMyCompanyProfile, saveMyCompanyProfile } from '../../services/companyService';
 
 const CompanyProfile = () => {

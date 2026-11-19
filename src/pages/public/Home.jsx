@@ -1,4 +1,4 @@
-import { ArrowRight, BriefcaseBusiness, Building2, CheckCircle, Search, Star } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, Building2, Search, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ctaStats, jobs, platformTestimonials, companyProfiles } from '../../data/mockData';
 import JobCard from '../../components/cards/JobCard';

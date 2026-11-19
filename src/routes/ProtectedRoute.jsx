@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import Loader from '../components/common/Loader';
 
 const ProtectedRoute = ({ children, allow }) => {

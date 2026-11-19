@@ -6,8 +6,13 @@ export const getAdminDashboard = async () => {
 };
 
 export const getAdminCompanies = async ({ page, limit, verified }) => {
+  const verifiedFilter = verified === 'verified'
+    ? 'true'
+    : verified === 'unverified'
+      ? 'false'
+      : '';
   const response = await api.get('/admin/companies', {
-    params: { page, limit, ...(verified ? { verified } : {}) }
+    params: { page, limit, ...(verifiedFilter ? { verified: verifiedFilter } : {}) }
   });
   return response.data;
 };

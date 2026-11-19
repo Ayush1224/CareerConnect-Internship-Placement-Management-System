@@ -1,8 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getCurrentUser } from '../services/authService';
 import { clearAuthToken, getAuthToken, storeAuthToken } from '../utils/authToken';
-
-const AuthContext = createContext(null);
+import { AuthContext } from './authContextValue';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -11,6 +10,10 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     clearAuthToken();
     setUser(null);
+  }, []);
+
+  const updateUser = useCallback((updates) => {
+    setUser((current) => current ? { ...current, ...updates } : current);
   }, []);
 
   const login = useCallback(async (token, remember = true) => {
@@ -50,15 +53,10 @@ export function AuthProvider({ children }) {
     };
   }, [logout]);
 
-  const value = useMemo(() => ({ user, loading, login, logout }), [user, loading, login, logout]);
+  const value = useMemo(
+    () => ({ user, loading, login, logout, updateUser }),
+    [user, loading, login, logout, updateUser]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
 }

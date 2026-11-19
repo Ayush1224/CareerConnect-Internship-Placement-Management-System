@@ -17,7 +17,12 @@ export const getCurrentUser = async (token) => {
   return response.data;
 };
 
-export const resetPassword = async (payload) => {
+export const forgotPassword = async (payload) => {
   const response = await api.post('/auth/forgot-password', payload);
+  return response.data;
+};
+
+export const resetPassword = async (payload) => {
+  const response = await api.post('/auth/reset-password', payload);
   return response.data;
 };

@@ -4,7 +4,7 @@ export const notFound = (req, res, next) => {
   next(new ApiError(404, `Route not found: ${req.originalUrl}`));
 };
 
-export const errorMiddleware = (err, req, res, next) => {
+export const errorMiddleware = (err, req, res, _next) => {
   const statusCode = err.statusCode || 500;
 
   res.status(statusCode).json({

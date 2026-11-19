@@ -15,6 +15,7 @@ import companyRoutes from './routes/companyRoutes.js';
 import interviewRoutes from './routes/interviewRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import studentRoutes from './routes/studentRoutes.js';
 import getJwtSecret from './utils/jwtSecret.js';
 
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/interviews', interviewRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/students', studentRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({

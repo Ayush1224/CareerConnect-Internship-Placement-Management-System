@@ -259,7 +259,8 @@ function assertValidator(collectionName, validator) {
 async function verifyDatabase() {
   try {
     await connectDB();
-    assert.equal(mongoose.connection.name, 'careerconnect');
+    const expectedDatabaseName = process.env.MONGO_DB_NAME?.trim() || 'careerconnect';
+    assert.equal(mongoose.connection.name, expectedDatabaseName);
     console.log(`Connected database: ${mongoose.connection.name}`);
 
     assert.equal(Object.keys(models).length, 8, 'All eight Mongoose models must import');

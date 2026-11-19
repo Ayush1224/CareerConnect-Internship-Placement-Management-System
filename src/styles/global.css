@@ -213,6 +213,11 @@ img { max-width: 100%; display: block; }
 .page-header { margin-bottom: 12px; }
 .profile-layout { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 20px; }
 .profile-card { padding: 28px; }
+.profile-avatar-image { object-fit: cover; }
+.profile-upload-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.profile-upload-field { min-width: 0; }
+.profile-upload-field .field__input { display: block; }
+.profile-upload-preview { width: 84px; height: 84px; border-radius: 16px; object-fit: cover; }
 .compact-list { margin-top: 16px; }
 .search-input { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 0.8rem 0.9rem; margin-bottom: 18px; }
 .search-bar { width: 100%; }
@@ -256,7 +261,7 @@ img { max-width: 100%; display: block; }
 .interview-list--student .interview-item h3 { margin: 0; }
 
 @media (max-width: 980px) {
-  .hero-grid, .contact-layout, .job-details__content, .profile-layout, .two-column-panel, .auth-card--wide, .dashboard-shell { grid-template-columns: 1fr; }
+  .hero-grid, .contact-layout, .job-details__content, .profile-layout, .profile-upload-grid, .two-column-panel, .auth-card--wide, .dashboard-shell { grid-template-columns: 1fr; }
   .card-grid--jobs, .company-grid, .steps-grid, .feature-grid, .testimonial-grid, .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nav { display: none; position: absolute; top: 80px; left: 16px; right: 16px; background: white; border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 16px; flex-direction: column; align-items: flex-start; }
   .nav--open { display: flex; }

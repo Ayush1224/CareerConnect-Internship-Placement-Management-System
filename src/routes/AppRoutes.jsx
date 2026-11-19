@@ -3,7 +3,8 @@ import PublicLayout from '../layouts/PublicLayout';
 import StudentLayout from '../layouts/StudentLayout';
 import CompanyLayout from '../layouts/CompanyLayout';
 import AdminLayout from '../layouts/AdminLayout';
-import { AuthProvider, useAuth } from '../context/AuthContext';
+import { AuthProvider } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 import Loader from '../components/common/Loader';
 import Home from '../pages/public/Home';
@@ -14,6 +15,7 @@ import JobDetails from '../pages/public/JobDetails';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import ForgotPassword from '../pages/auth/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentProfile from '../pages/student/StudentProfile';
 import BrowseJobs from '../pages/student/BrowseJobs';
@@ -57,6 +59,7 @@ const AppRoutesContent = () => {
         <Route path="/login" element={user ? <Navigate to={getDashboardPath()} replace /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to={getDashboardPath()} replace /> : <Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Route>
 

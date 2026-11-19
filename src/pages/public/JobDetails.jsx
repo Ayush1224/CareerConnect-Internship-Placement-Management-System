@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { BriefcaseBusiness, CalendarDays, DollarSign, MapPin, Sparkles, Users } from 'lucide-react';
 import Loader from '../../components/common/Loader';
 import JobApplicationForm from '../../components/forms/JobApplicationForm';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 import { getJobById } from '../../services/jobService';
 import { formatJobDeadline } from '../../utils/jobFormat';
 

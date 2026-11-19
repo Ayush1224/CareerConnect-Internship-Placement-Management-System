@@ -13,9 +13,23 @@ const fileFilter = (allowedMimeTypes) => (req, file, cb) => {
 };
 
 export const uploadFields = ({ fieldName, allowedMimeTypes = [], maxSizeMb = 5 }) => {
-  return multer({
+  const upload = multer({
     storage,
     limits: { fileSize: maxSizeMb * 1024 * 1024 },
     fileFilter: fileFilter(allowedMimeTypes)
   }).single(fieldName);
+
+  return (req, res, next) => {
+    upload(req, res, (error) => {
+      if (!error) return next();
+      if (error instanceof multer.MulterError) {
+        const statusCode = error.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+        const message = error.code === 'LIMIT_FILE_SIZE'
+          ? 'File exceeds the upload size limit'
+          : 'Invalid file upload';
+        return next(new ApiError(statusCode, message));
+      }
+      return next(error);
+    });
+  };
 };

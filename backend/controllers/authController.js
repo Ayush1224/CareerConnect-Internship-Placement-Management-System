@@ -109,57 +109,76 @@ export const getLoggedInUser = async (req, res) => {
 
 export const forgotPassword = async (req, res, next) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const email = req.body.email.trim().toLowerCase();
+    const user = await User.findOne({ email, isActive: true }).select('_id email');
 
-    if (!user) {
-      return next(new ApiError(404, 'No account found with this email'));
+    if (user) {
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+      const passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
+      const update = await User.updateOne(
+        { _id: user._id, isActive: true },
+        { $set: { passwordResetToken: resetTokenHash, passwordResetExpires } }
+      );
+
+      if (update.matchedCount) {
+        const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/+$/, '');
+        const resetLink = `${clientUrl}/reset-password?token=${encodeURIComponent(resetToken)}`;
+        try {
+          await sendEmail({
+            to: user.email,
+            subject: 'CareerConnect Password Reset',
+            text: `Use the following link to reset your password: ${resetLink}`
+          });
+        } catch {
+          console.error('Password reset email delivery failed.');
+          try {
+            await User.updateOne(
+              { _id: user._id, passwordResetToken: resetTokenHash },
+              { $unset: { passwordResetToken: 1, passwordResetExpires: 1 } }
+            );
+          } catch {
+            console.error('Failed to clear a password reset token after email delivery failure.');
+          }
+        }
+      }
     }
 
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    user.passwordResetToken = resetToken;
-    user.passwordResetExpires = Date.now() + 60 * 60 * 1000;
-    await user.save();
-
-    const resetLink = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
-    await sendEmail({
-      to: user.email,
-      subject: 'CareerConnect Password Reset',
-      text: `Use the following link to reset your password: ${resetLink}`
-    }).catch(() => {});
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: 'Password reset link sent to your email'
+      message: 'If an account exists for that email, password reset instructions will be sent.'
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
 export const resetPassword = async (req, res, next) => {
   try {
     const { token, password } = req.body;
-
-    const user = await User.findOne({
-      passwordResetToken: token,
-      passwordResetExpires: { $gt: Date.now() }
-    });
+    const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOneAndUpdate(
+      {
+        passwordResetToken,
+        passwordResetExpires: { $gt: new Date() },
+        isActive: true
+      },
+      {
+        $set: { password: await bcrypt.hash(password, 10) },
+        $unset: { passwordResetToken: 1, passwordResetExpires: 1 }
+      },
+      { runValidators: true }
+    );
 
     if (!user) {
       return next(new ApiError(400, 'Invalid or expired reset token'));
     }
 
-    user.password = await bcrypt.hash(password, 10);
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save();
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Password reset successful'
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
